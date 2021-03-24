@@ -7,6 +7,7 @@ Northeastern University
 Contains the code used to analyze wav files and determine its genre.
 '''
 import csv
+from csv import reader
 
 import librosa.display
 import os
@@ -36,6 +37,7 @@ else:
     FILE_DELIM = '/'
 INPUT_DIRECTORY = str(pathlib.Path().absolute()) + FILE_DELIM + "input" + FILE_DELIM
 OUTPUT_DIRECTORY = str(pathlib.Path().absolute()) + FILE_DELIM + "output" + FILE_DELIM
+DATA_DIRECTORY = str(pathlib.Path().absolute()) + FILE_DELIM + "processed_data" + FILE_DELIM
 
 
 # Removes Old Outputs from Directory
@@ -77,7 +79,28 @@ def analyze_song(song_name):
         writer.writerow([song_name, numpy.mean(spectral_centroid),
                          numpy.mean(spectral_rolloff), numpy.mean(zero_crossing_rate), bpm])
 
-
+    '''
+    Strategy One:
+        - Select "closeness buffer" (value for each feature it can be within to match)
+            Examples:
+                Spectral Centroid - 5%
+                Spectral RollOff - 10%
+                "Swing" - 3%
+        - Iterate through songs, collecting matches
+        - Go through matches, determine which genre(s) the most matches come from
+        - Experiment with different "closeness buffers"
+    Strategy Two:
+        - Iterate through database, finding top X matches
+        - See which genre(s) the top X matches are from
+        - Experiment by changing X
+    Experiment By Comparing Strategy One & Two
+    '''
+    # Open Song Database
+    database = open(DATA_DIRECTORY + FILE_DELIM + 'mean_features' + FILE_DELIM + 'features.csv', 'r')
+    with database as database_file:
+        csv_reader = reader(database_file)
+        for song in csv_reader:
+            print(song)
 
 
 clean_output_directory()
