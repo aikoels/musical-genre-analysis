@@ -10,7 +10,6 @@ import csv
 import os
 import platform
 import pathlib
-from csv import reader
 import librosa.display
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
