@@ -46,10 +46,11 @@ feature_buffer = {
     zero_crossing_rate: .05,
     bpm: .5
 }
+top_songs_number = 20
 
 # Chose Comparison Method:
 #   most_matches: Select the genre with the most matches, using the feature_buffer values to determine what is a match
-#
+#   top_songs: Select a number of the top closest songs which match the input, from those, find the most common genres
 COMPARISON_METHOD = most_matches
 
 # System Defaults
