@@ -41,10 +41,10 @@ bpm = "BPM"
 
 # Set feature buffer amounts used for "most_matches" method
 feature_buffer = {
-    spectral_centroid: .05,
-    spectral_rolloff: .05,
-    zero_crossing_rate: .05,
-    bpm: .5
+    spectral_centroid: .02,  # .05
+    spectral_rolloff: .02,  # .05
+    zero_crossing_rate: 1,  # .05
+    bpm: .5  # .5
 }
 top_songs_number = 20
 
@@ -105,7 +105,7 @@ def analyze_song(song_name):
                         "Spectral Rolloff: %f\n"
                         "Zero Crossing: %f\n"
                         "BPM: %i" % (numpy.mean(
-                                         song_spectral_centroid),
+            song_spectral_centroid),
                                      numpy.mean(
                                          song_spectral_rolloff),
                                      numpy.mean(
