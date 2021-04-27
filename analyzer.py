@@ -144,7 +144,7 @@ def match_songs():
         genres.reverse()
         # Attempt to print out genre and subgenre
         try:
-            if matches[genres[1]] > .5 * matches[genres[0]]:  # If the second genre is close, print both
+            if matches[genres[1]] >= .5 * matches[genres[0]]:  # If the second genre is close, print both
                 print(*genres[:2], sep=', ')
             else:
                 print(genres[0])
