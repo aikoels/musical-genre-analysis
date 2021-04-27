@@ -142,6 +142,9 @@ def match_songs():
         print("Song Name: %s\nSong Genres:" % song[0], end=' ')
         genres = sorted(matches, key=matches.get)
         genres.reverse()
+        # Debug printout of all matches
+        if DEBUG:
+            print("All Matches:", matches)
         # Attempt to print out genre and subgenre
         try:
             if matches[genres[1]] >= .5 * matches[genres[0]]:  # If the second genre is close, print both
@@ -150,9 +153,6 @@ def match_songs():
                 print(genres[0])
         except:  # Print only genre if getting subgenre fails
             print(genres[0])
-        # Debug printout of all matches
-        if DEBUG:
-            print("All Matches:", matches)
         # Count correct guesses
         if COUNT_CORRECT:
             # Correct Genre Guess
@@ -198,7 +198,9 @@ clean_output_directory()
 for filename in os.listdir(INPUT_DIRECTORY):
     if filename.endswith(".wav"):
         analyze_song(filename)
+
     else:
         continue
 
+print("\n=====RESULTS=====")
 match_songs()
