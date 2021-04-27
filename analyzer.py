@@ -21,7 +21,9 @@ warnings.filterwarnings('ignore')
 import numpy
 
 # Debug Toggle
-DEBUG = True
+DEBUG = False
+# Toggle Checking the name of the song for the guess to see if it's correct. E.g. Guess is "disco" for "disco.wav"
+COUNT_CORRECT = False
 
 sr = None  # Resampling rate for songs, set to None to disable
 x_axis = 'time'  # X Axis unit for graphs
@@ -41,12 +43,11 @@ bpm = "BPM"
 
 # Set feature buffer amounts used for "most_matches" method
 feature_buffer = {
-    spectral_centroid: .02,  # .05
-    spectral_rolloff: .02,  # .05
-    zero_crossing_rate: 1,  # .05
-    bpm: .5  # .5
+    spectral_centroid: .02,  # .02
+    spectral_rolloff: .11,  # .11
+    zero_crossing_rate: .2,  #
+    bpm: .2  #
 }
-top_songs_number = 20
 
 # Chose Comparison Method:
 #   most_matches: Select the genre with the most matches, using the feature_buffer values to determine what is a match
@@ -122,6 +123,8 @@ def match_songs():
         csv_reader = csv.reader(file)
         song_data = list(csv_reader)
 
+    # Output Correct Matches
+    correct_matches = {}
     for song in song_data:
         matches = {}
         # Open Song Database
@@ -139,9 +142,37 @@ def match_songs():
         print("Song Name: %s\nSong Genres:" % song[0], end=' ')
         genres = sorted(matches, key=matches.get)
         genres.reverse()
-        print(*genres[:2], sep=', ')
-        if DEBUG: print("All Matches:", matches)
+        # Attempt to print out genre and subgenre
+        try:
+            if matches[genres[1]] > .5 * matches[genres[0]]:  # If the second genre is close, print both
+                print(*genres[:2], sep=', ')
+            else:
+                print(genres[0])
+        except:  # Print only genre if getting subgenre fails
+            print(genres[0])
+        # Debug printout of all matches
+        if DEBUG:
+            print("All Matches:", matches)
+        # Count correct guesses
+        if COUNT_CORRECT:
+            # Correct Genre Guess
+            if genres[0] in song[0] and matches[genres[0]] != 1:
+                try:  # Add to current tally for genre
+                    correct_matches[genres[0]] += 1.0
+                except:  # Start new tally for genre
+                    correct_matches[genres[0]] = 1
+            # Guessed Subgenre
+            try:
+                if genres[1] in song[0]:
+                    try:
+                        correct_matches[genres[1]] += .5
+                    except:
+                        correct_matches[genres[1]] = .5
+            except:
+                pass
         print()
+    if COUNT_CORRECT:
+        print(correct_matches)
 
 
 # Return true if a and b are within (r/100)% of each other
@@ -169,4 +200,5 @@ for filename in os.listdir(INPUT_DIRECTORY):
         analyze_song(filename)
     else:
         continue
+
 match_songs()
